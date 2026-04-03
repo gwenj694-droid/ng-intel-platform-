@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NG Intel — AI Mastery Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#C9A84C;--gold-light:#E2C97E;
+  --aurora-green:#00E5A0;--aurora-purple:#B44FE8;--aurora-pink:#E8359A;--aurora-blue:#4F8FE8;
+  --sunrise:#FF6B1A;--sunrise-gold:#FFB800;
+  --black:#04030A;--dark:#080614;--surface:#0E0B1E;--surface2:#130F28;
+  --text:rgba(240,237,252,0.92);--muted:rgba(200,195,230,0.5);--faint:rgba(200,195,230,0.15);
+  --border:rgba(180,79,232,0.2);--border-gold:rgba(201,168,76,0.25);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--text);overflow-x:hidden;min-height:100vh}
+
+/* ── COSMIC BACKGROUND ── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 10% 20%, rgba(0,229,160,0.08) 0%, transparent 40%),
+    radial-gradient(ellipse at 85% 10%, rgba(180,79,232,0.1) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 5%, rgba(232,53,154,0.06) 0%, transparent 35%),
+    radial-gradient(ellipse at 90% 80%, rgba(79,143,232,0.06) 0%, transparent 40%),
+    radial-gradient(ellipse at 50% 100%, rgba(255,107,26,0.08) 0%, transparent 40%),
+    linear-gradient(180deg, #04030A 0%, #080614 50%, #04030A 100%);
+}
+
+/* ── LOCK SCREEN ── */
+#lockscreen{position:fixed;inset:0;background:var(--black);z-index:500;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:40px;overflow:hidden}
+.lock-cosmos{position:absolute;inset:0;background:
+  radial-gradient(ellipse at 15% 25%, rgba(0,229,160,0.12) 0%, transparent 40%),
+  radial-gradient(ellipse at 80% 15%, rgba(180,79,232,0.14) 0%, transparent 45%),
+  radial-gradient(ellipse at 50% 0%, rgba(232,53,154,0.1) 0%, transparent 40%),
+  radial-gradient(ellipse at 50% 100%, rgba(255,184,0,0.12) 0%, transparent 40%);
+  pointer-events:none}
+.lock-stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.6) 0%, transparent 100%),radial-gradient(1px 1px at 40% 10%, rgba(255,255,255,0.4) 0%, transparent 100%),radial-gradient(1px 1px at 60% 50%, rgba(255,255,255,0.5) 0%, transparent 100%),radial-gradient(1px 1px at 75% 20%, rgba(255,255,255,0.3) 0%, transparent 100%),radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.4) 0%, transparent 100%),radial-gradient(1px 1px at 10% 70%, rgba(255,255,255,0.3) 0%, transparent 100%),radial-gradient(1px 1px at 30% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),radial-gradient(1px 1px at 55% 75%, rgba(255,255,255,0.3) 0%, transparent 100%),radial-gradient(1px 1px at 85% 65%, rgba(255,255,255,0.4) 0%, transparent 100%);pointer-events:none}
+.lock-inner{position:relative;z-index:2;max-width:680px}
+.lock-tag{font-size:9px;letter-spacing:6px;text-transform:uppercase;color:var(--aurora-green);margin-bottom:20px;opacity:0;animation:fadeUp 1s ease 0.2s forwards}
+.lock-title{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,8vw,88px);font-weight:300;line-height:0.95;margin-bottom:16px;opacity:0;animation:fadeUp 1s ease 0.4s forwards}
+.lock-title .t1{color:var(--text)}
+.lock-title .t2{color:var(--gold);font-style:italic}
+.lock-title .t3{
+  background:linear-gradient(135deg,var(--aurora-green),var(--aurora-purple),var(--aurora-pink));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic}
+.lock-line{width:60px;height:1px;margin:24px auto;opacity:0;animation:fadeUp 1s ease 0.5s forwards;background:linear-gradient(90deg,var(--aurora-green),var(--gold),var(--aurora-pink))}
+.lock-sub{font-size:16px;font-weight:300;color:var(--muted);max-width:500px;margin:0 auto 40px;line-height:1.8;opacity:0;animation:fadeUp 1s ease 0.6s forwards}
+.lock-price-wrap{margin-bottom:40px;opacity:0;animation:fadeUp 1s ease 0.7s forwards}
+.lock-price{font-family:'Cormorant Garamond',serif;font-size:64px;font-weight:300;line-height:1;background:linear-gradient(135deg,var(--gold),var(--gold-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.lock-price-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px}
+.lock-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;opacity:0;animation:fadeUp 1s ease 0.8s forwards}
+.btn-lock-main{padding:18px 52px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#000;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;text-decoration:none;border:none;cursor:pointer;transition:opacity 0.2s}
+.btn-lock-main:hover{opacity:0.9}
+.btn-lock-preview{padding:18px 36px;background:transparent;color:var(--aurora-green);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;border:1px solid rgba(0,229,160,0.3);cursor:pointer;transition:all 0.2s}
+.btn-lock-preview:hover{border-color:var(--aurora-green);background:rgba(0,229,160,0.05)}
+.lock-pills{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:36px;opacity:0;animation:fadeUp 1s ease 1s forwards}
+.lock-pill{font-size:10px;letter-spacing:2px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.lock-pill::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--gold)}
+
+/* ── PLATFORM ── */
+#platform{display:none;position:relative;z-index:1}
+.layout{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{width:272px;flex-shrink:0;border-right:1px solid var(--border);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;display:flex;flex-direction:column;background:rgba(8,6,20,0.95);backdrop-filter:blur(20px)}
+.sidebar-brand{padding:28px 24px 20px;border-bottom:1px solid var(--border)}
+.brand-tag{font-size:8px;letter-spacing:5px;text-transform:uppercase;color:var(--aurora-green);margin-bottom:8px}
+.brand-name{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;line-height:1}
+.brand-name .b1{color:var(--text)}.brand-name .b2{color:var(--gold);font-style:italic}
+.sidebar-progress{padding:20px 24px;border-bottom:1px solid var(--border)}
+.prog-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.prog-track{height:3px;background:var(--faint);border-radius:2px;margin-bottom:8px;overflow:hidden}
+.prog-fill{height:3px;border-radius:2px;transition:width 0.8s ease;background:linear-gradient(90deg,var(--aurora-green),var(--gold),var(--aurora-pink));width:0%}
+.prog-text{font-size:11px;color:var(--muted)}.prog-text span{color:var(--gold);font-weight:600}
+.sidebar-nav{padding:12px 0;flex:1}
+.nav-item{padding:13px 22px;cursor:pointer;border-left:2px solid transparent;transition:all 0.2s;display:flex;align-items:center;gap:12px}
+.nav-item:hover:not(.nav-locked){background:rgba(180,79,232,0.06)}
+.nav-item.nav-active{border-left-color:var(--gold);background:rgba(201,168,76,0.06)}
+.nav-item.nav-locked{opacity:0.3;cursor:not-allowed}
+.nav-num{font-size:9px;letter-spacing:2px;color:var(--aurora-purple);font-weight:600;min-width:18px}
+.nav-title{font-size:12px;font-weight:400;color:var(--text);flex:1;line-height:1.3}
+.nav-dot{width:14px;height:14px;border-radius:50%;border:1px solid var(--border);flex-shrink:0;transition:all 0.3s}
+.nav-dot.dot-done{background:var(--gold);border-color:var(--gold)}
+.nav-dot.dot-active{border-color:var(--aurora-green);box-shadow:0 0 8px rgba(0,229,160,0.4)}
+.sidebar-footer{padding:20px 24px;border-top:1px solid var(--border)}
+.sidebar-footer p{font-size:10px;color:var(--muted);line-height:1.6}
+
+/* ── MAIN ── */
+.main{margin-left:272px;flex:1;min-height:100vh;position:relative}
+.main-header{padding:32px 48px 24px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;background:rgba(8,6,20,0.6);backdrop-filter:blur(10px);position:sticky;top:0;z-index:50}
+.mh-eye{font-size:9px;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px}
+.mh-title{font-family:'Cormorant Garamond',serif;font-size:clamp(26px,3vw,40px);font-weight:300;line-height:1.1}
+.mh-badge{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:7px 16px;border:1px solid var(--border);color:var(--muted);border-radius:20px}
+
+/* ── MODULE ── */
+.mod-view{padding:44px 48px}
+.mod-intro{max-width:680px;margin-bottom:44px}
+.mod-intro-tag{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--aurora-purple);margin-bottom:12px}
+.mod-intro-title{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,3vw,34px);font-weight:300;line-height:1.2;margin-bottom:14px}
+.mod-intro-title em{color:var(--gold);font-style:italic}
+.mod-intro-body{font-size:14px;font-weight:300;color:var(--muted);line-height:1.9}
+
+/* ── LESSON LIST ── */
+.lesson-list{border:1px solid var(--border);margin-bottom:36px;overflow:hidden}
+.lesson-row{padding:22px 26px;border-bottom:1px solid var(--border);cursor:pointer;transition:all 0.2s;display:flex;align-items:flex-start;gap:18px}
+.lesson-row:last-child{border-bottom:none}
+.lesson-row:hover:not(.row-locked){background:rgba(180,79,232,0.04)}
+.lesson-row.row-active{background:rgba(201,168,76,0.05);border-left:2px solid var(--gold);padding-left:24px}
+.lesson-row.row-done{opacity:0.65}
+.lesson-row.row-locked{cursor:not-allowed;opacity:0.3}
+.row-num{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--faint);line-height:1;min-width:38px}
+.row-done .row-num{color:var(--gold);opacity:0.6}
+.row-body{flex:1}
+.row-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:5px}
+.row-desc{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px;font-weight:300}
+.row-chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:20px;border:1px solid var(--border);color:var(--muted)}
+.chip-apply{border-color:rgba(0,229,160,0.3);color:var(--aurora-green)}
+.chip-done{border-color:rgba(201,168,76,0.3);color:var(--gold)}
+.row-icon{width:22px;height:22px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;font-size:10px;transition:all 0.3s}
+.row-icon.ri-done{background:var(--gold);border-color:var(--gold);color:#000}
+.row-icon.ri-active{border-color:var(--aurora-green);color:var(--aurora-green);box-shadow:0 0 10px rgba(0,229,160,0.3)}
+
+/* ── LESSON PANEL ── */
+.lesson-panel{border:1px solid var(--border);background:rgba(13,10,30,0.8);padding:36px;margin-bottom:36px;display:none;backdrop-filter:blur(10px)}
+.lesson-panel.open{display:block;animation:fadeUp 0.4s ease}
+.lp-tag{font-size:9px;letter-spacing:4px;text-transform:uppercase;margin-bottom:16px}
+.lp-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;color:var(--text);margin-bottom:22px;line-height:1.2}
+.lp-content{font-size:14px;font-weight:300;color:var(--muted);line-height:1.95;margin-bottom:32px}
+.lp-content strong{color:var(--text);font-weight:500}
+.lp-content ul{list-style:none;margin:14px 0;display:flex;flex-direction:column;gap:10px}
+.lp-content ul li{padding-left:18px;position:relative;font-size:14px}
+.lp-content ul li::before{content:'';position:absolute;left:0;top:9px;width:4px;height:4px;background:var(--aurora-green);border-radius:50%}
+
+/* ── APPLY BOX ── */
+.apply-box{border:1px solid rgba(0,229,160,0.2);border-left:3px solid var(--aurora-green);background:rgba(0,229,160,0.03);padding:28px 32px;margin-bottom:28px}
+.apply-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.apply-badge{font-size:8px;letter-spacing:3px;text-transform:uppercase;padding:4px 12px;background:rgba(0,229,160,0.1);color:var(--aurora-green);border-radius:20px;border:1px solid rgba(0,229,160,0.2)}
+.apply-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:10px}
+.apply-desc{font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:22px;font-weight:300}
+.apply-input-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--aurora-green);margin-bottom:10px}
+.apply-textarea{width:100%;min-height:140px;background:rgba(4,3,10,0.8);border:1px solid rgba(0,229,160,0.15);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;line-height:1.7;padding:16px 18px;resize:vertical;transition:border-color 0.2s;border-radius:2px}
+.apply-textarea:focus{outline:none;border-color:rgba(0,229,160,0.4)}
+.apply-textarea::placeholder{color:var(--faint)}
+.apply-submit-row{display:flex;align-items:center;gap:14px;margin-top:16px;flex-wrap:wrap}
+.btn-submit{padding:14px 36px;background:linear-gradient(135deg,rgba(0,229,160,0.15),rgba(180,79,232,0.15));border:1px solid rgba(0,229,160,0.4);color:var(--aurora-green);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;border-radius:2px}
+.btn-submit:hover{background:rgba(0,229,160,0.2);border-color:var(--aurora-green)}
+.btn-submit:disabled{opacity:0.4;cursor:not-allowed}
+.submit-hint{font-size:12px;color:var(--muted);font-weight:300}
+
+/* ── AI FEEDBACK ── */
+.ai-feedback{margin-top:22px;border:1px solid rgba(180,79,232,0.25);background:rgba(180,79,232,0.04);padding:24px 28px;display:none;border-radius:2px}
+.ai-feedback.show{display:block;animation:fadeUp 0.5s ease}
+.ai-feedback-head{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.ai-badge{font-size:8px;letter-spacing:3px;text-transform:uppercase;padding:4px 12px;background:rgba(180,79,232,0.15);color:var(--aurora-purple);border-radius:20px;border:1px solid rgba(180,79,232,0.3)}
+.ai-thinking{display:flex;gap:6px;align-items:center;padding:16px 0}
+.ai-dot{width:6px;height:6px;border-radius:50%;background:var(--aurora-purple);animation:think 1.4s ease-in-out infinite}
+.ai-dot:nth-child(2){animation-delay:0.2s}
+.ai-dot:nth-child(3){animation-delay:0.4s}
+@keyframes think{0%,80%,100%{opacity:0.2;transform:scale(0.8)}40%{opacity:1;transform:scale(1.2)}}
+.ai-text{font-size:14px;font-weight:300;color:var(--text);line-height:1.85;white-space:pre-wrap}
+
+/* ── COMPLETE BTN ── */
+.lesson-btns{display:flex;gap:12px;align-items:center;margin-top:24px;flex-wrap:wrap}
+.btn-complete{padding:16px 44px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#000;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border:none;cursor:pointer;transition:opacity 0.2s;opacity:0.35;pointer-events:none}
+.btn-complete.ready{opacity:1;pointer-events:all}
+.btn-complete.ready:hover{opacity:0.9}
+.btn-prev-les{padding:16px 28px;background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.btn-prev-les:hover{border-color:var(--aurora-purple);color:var(--aurora-purple)}
+
+/* ── MODULE COMPLETE ── */
+.mod-complete{text-align:center;padding:64px 40px;border:1px solid var(--border);display:none;background:rgba(13,10,30,0.6);margin-bottom:36px}
+.mod-complete.show{display:block;animation:fadeUp 0.6s ease}
+.mc-glow{width:80px;height:80px;border-radius:50%;margin:0 auto 24px;background:linear-gradient(135deg,var(--aurora-green),var(--aurora-purple),var(--gold));display:flex;align-items:center;justify-content:center;font-size:32px}
+.mc-title{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;margin-bottom:12px}
+.mc-title em{color:var(--gold);font-style:italic}
+.mc-sub{font-size:14px;color:var(--muted);max-width:440px;margin:0 auto 32px;line-height:1.75;font-weight:300}
+.btn-unlock{padding:18px 52px;background:linear-gradient(135deg,var(--aurora-green),var(--aurora-purple));color:#fff;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;border:none;cursor:pointer;transition:opacity 0.2s}
+.btn-unlock:hover{opacity:0.9}
+
+/* ── LOCKED MODULE ── */
+.locked-mod{text-align:center;padding:100px 40px}
+.lm-ring{width:64px;height:64px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:24px;opacity:0.35}
+.lm-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--muted);margin-bottom:12px}
+.lm-sub{font-size:13px;color:var(--faint);max-width:340px;margin:0 auto;line-height:1.7;font-weight:300}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:900px){.sidebar{width:240px}.main{margin-left:240px}.mod-view,.main-header{padding-left:28px;padding-right:28px}}
+@media(max-width:680px){.sidebar{display:none}.main{margin-left:0}.mod-view{padding:24px 20px}}
+</style>
+</head>
+<body>
+
+<!-- ── LOCK SCREEN ── -->
+<div id="lockscreen">
+  <div class="lock-cosmos"></div>
+  <div class="lock-stars"></div>
+  <div class="lock-inner">
+    <p class="lock-tag">NG Intelligence · AI Mastery Platform</p>
+    <h1 class="lock-title">
+      <div class="t1">Master</div>
+      <div class="t2">Artificial Intelligence</div>
+      <div class="t3">Start to Finish</div>
+    </h1>
+    <div class="lock-line"></div>
+    <p class="lock-sub">Learn 35+ AI tools through real, hands-on exercises. Type your work directly into the platform. Get instant AI coaching feedback. Unlock each module as you master the last.</p>
+    <div class="lock-price-wrap">
+      <div class="lock-price">£197</div>
+      <div class="lock-price-label">Lifetime access · One payment · No subscription</div>
+    </div>
+    <div class="lock-btns">
+      <a href="YOUR_STRIPE_LINK_HERE" class="btn-lock-main">Get Lifetime Access →</a>
+      <button class="btn-lock-preview" onclick="enterPlatform()">Preview Inside</button>
+    </div>
+    <div class="lock-pills">
+      <span class="lock-pill">8 complete modules</span>
+      <span class="lock-pill">35+ AI tools</span>
+      <span class="lock-pill">Live AI feedback</span>
+      <span class="lock-pill">Learn by doing</span>
+      <span class="lock-pill">Unlock as you progress</span>
+      <span class="lock-pill">Lifetime access</span>
+    </div>
+  </div>
+</div>
+
+<!-- ── PLATFORM ── -->
+<div id="platform">
+  <div class="layout">
+
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-tag">NG Intelligence</div>
+        <div class="brand-name"><span class="b1">AI</span> <span class="b2">Mastery</span></div>
+      </div>
+      <div class="sidebar-progress">
+        <div class="prog-label">Your Journey</div>
+        <div class="prog-track"><div class="prog-fill" id="prog-fill"></div></div>
+        <p class="prog-text">Module <span id="prog-cur">1</span> of <span>8</span></p>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav"></nav>
+      <div class="sidebar-footer"><p>Complete each lesson. Type your answers. Get AI feedback. Unlock your future.</p></div>
+    </aside>
+
+    <main class="main">
+      <div class="main-header">
+        <div>
+          <div class="mh-eye" id="mh-eye"></div>
+          <h1 class="mh-title" id="mh-title"></h1>
+        </div>
+        <div class="mh-badge" id="mh-badge"></div>
+      </div>
+      <div class="mod-view" id="mod-view"></div>
+    </main>
+
+  </div>
+</div>
+
+<script>
+
+
+// ── MODULE DATA ──
+const MODULES = [
+  {
+    id:1,title:"AI Foundations & Mindset",short:"AI Foundations",color:"var(--aurora-green)",tag:"Where it all begins",
+    intro:"Before you touch a single AI tool, you need to understand how this technology actually works. This module gives you the foundation everything else is built on — and your first taste of getting instant AI coaching on your work.",
+    lessons:[
+      {title:"What AI actually is — and what it isn't",desc:"Cut through the hype and understand what's really happening.",
+       content:`<strong>Artificial Intelligence is not magic. It's pattern recognition at massive scale.</strong> When you type a prompt, the AI isn't thinking — it's predicting the most likely next token based on everything it was trained on.\n\nThis changes how you use it. You're not having a conversation with an intelligent being. You're operating a very powerful pattern engine. Once you understand that, your results improve immediately.\n\n<strong>The three types of AI you'll use:</strong>\n<ul><li><strong>Language models</strong> (ChatGPT, Claude) — text, reasoning, writing, strategy</li><li><strong>Image models</strong> (Midjourney, DALL-E, Flux) — visual creation at professional quality</li><li><strong>Multimodal models</strong> — combine text, image, audio and video in one workflow</li></ul>\n\nBy the end of this platform you'll be using all three fluently — and earning from them.`,
+       apply:{title:"Map your AI starting point",placeholder:"Tell me where you're starting from. What AI tools have you already tried? What frustrated you? What are you hoping to achieve by completing this platform? Be honest — this is your baseline.",
+              prompt:"You are an expert AI coach working inside the NG Intelligence AI Mastery Platform. A student has just completed their first lesson on 'What AI is' and shared their starting point. Give them warm, energising feedback that: (1) acknowledges specifically what they wrote, (2) identifies the most exciting opportunity in their situation, (3) gives them one concrete mindset shift to take into the next lesson. Keep it under 150 words. Be genuine, not generic. Sign off as 'Your NG Intel Coach'."}},
+      {title:"The 35+ AI tools — your complete toolkit",desc:"An honest overview of every major tool and what each actually does best.",
+       content:`Not every AI tool is for everyone. The biggest mistake beginners make is jumping between tools without understanding what each one excels at.\n\n<strong>Tools covered in this platform:</strong>\n<ul><li><strong>Text & Reasoning:</strong> ChatGPT, Claude, Gemini, Perplexity</li><li><strong>Image Creation:</strong> Midjourney, DALL-E, Flux, Firefly, Ideogram, Leonardo, NG Intel</li><li><strong>Video:</strong> Runway, Kling, Sora, Pika, Luma Dream Machine</li><li><strong>Voice & Audio:</strong> ElevenLabs, Suno, Udio</li><li><strong>Productivity:</strong> Notion AI, Gamma, Perplexity</li><li><strong>Building:</strong> Bolt.new, Cursor, Replit, Claude Code</li><li><strong>Automation:</strong> Zapier, Make, n8n</li><li><strong>Design:</strong> Canva AI, Adobe Firefly</li></ul>\n\nEach module covers the tools relevant to that skill. By Module 8 you'll have used all of them.`,
+       apply:{title:"Choose your priority tools",placeholder:"From the list above, which 5 AI tools excite you most and why? Which feel most relevant to your business or goals right now? And which one feels the most intimidating — the one you want to master but haven't started yet?",
+              prompt:"You are an expert AI coach inside the NG Intelligence AI Mastery Platform. A student has shared which AI tools excite them most and which one intimidates them. Give them feedback that: (1) validates their instincts about the tools they chose, (2) explains why the intimidating tool is worth facing, (3) suggests a smart order to tackle their priority tools. Keep it under 180 words. Be direct and energising. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Prompt engineering — the skill that changes everything",desc:"The single most important skill in the entire AI world.",
+       content:`<strong>A bad prompt gets a mediocre result. A great prompt gets a stunning result.</strong> This isn't the AI's fault — it's the instruction.\n\nThe anatomy of a powerful prompt:\n<ul><li><strong>Role</strong> — tell the AI who it is ("You are a luxury brand copywriter...")</li><li><strong>Context</strong> — give it the full situation</li><li><strong>Task</strong> — be specific about exactly what you want</li><li><strong>Format</strong> — tell it how to respond (length, structure, style)</li><li><strong>Tone</strong> — define the voice and energy</li></ul>\n\n<strong>Example transformation:</strong>\n\nWeak: "Write me a caption"\n\nStrong: "You are a luxury wellness brand copywriter. Write 3 Instagram captions for a new magnesium supplement targeting professional women aged 35-50. Tone: confident, science-backed, aspirational. Each caption under 120 words. No hashtags. End each with a soft call to action."\n\nSame AI. Completely different result.`,
+       apply:{title:"Write your first power prompt",placeholder:"Write a prompt using the Role + Context + Task + Format + Tone framework for something real in YOUR business or life. Then paste the AI's response below it. Show me both — the prompt you wrote AND what the AI produced.",
+              prompt:"You are an expert prompt engineering coach at the NG Intelligence AI Mastery Platform. A student has written their first structured prompt and shared both the prompt and the AI's response. Evaluate their prompt and give feedback on: (1) what they did well in the structure, (2) one specific improvement that would make the output even stronger, (3) genuine encouragement about what this skill will unlock for them. Under 160 words. Specific and practical. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Building your personal AI workflow",desc:"Structure your day around AI so it saves you real hours.",
+       content:`AI should replace hours of work — not add to your to-do list. The secret is having a workflow. A consistent sequence of tools and steps you repeat.\n\n<strong>A real AI workflow example:</strong>\n<ul><li><strong>Research:</strong> Perplexity to find what's trending in your niche (5 mins)</li><li><strong>Content:</strong> Claude to draft posts, emails, scripts (15 mins)</li><li><strong>Visuals:</strong> NG Intel or Midjourney for images (10 mins)</li><li><strong>Review:</strong> ChatGPT to critique and improve everything (5 mins)</li><li><strong>Schedule:</strong> Buffer to publish across platforms automatically</li></ul>\n\nTotal: 35 minutes. Professional output across every platform. Every day.\n\nBy Module 8 you'll have a complete AI system running your content, products and income — almost on autopilot.`,
+       apply:{title:"Design your AI daily workflow",placeholder:"Design your personal AI workflow. What would you use AI for each morning? What repetitive tasks in your business could AI handle? Map out a simple daily routine using 3-5 AI tools. Be specific about what you'd do with each one.",
+              prompt:"You are an AI workflow strategist and coach at the NG Intelligence AI Mastery Platform. A student has designed their personal AI workflow. Give them feedback that: (1) highlights the strongest part of their workflow design, (2) identifies one gap or missed opportunity they haven't seen, (3) estimates the time they could save per week if they execute it. Under 160 words. Practical and exciting. Sign off as 'Your NG Intel Coach'."}},
+      {title:"AI ethics, limits and what to watch out for",desc:"Use AI with integrity — and protect your reputation.",
+       content:`<strong>AI makes mistakes. Confidently.</strong> It presents wrong information as fact, copies existing styles too closely, and produces generic content without clear direction.\n\n<strong>The golden rules of AI use:</strong>\n<ul><li>Always review before you publish — AI drafts, you decide</li><li>Never use AI to impersonate real people or mislead</li><li>Fact-check anything AI presents as data or statistics</li><li>Your voice and brand — use AI to amplify it, not replace it</li><li>Copyright: AI images are generally yours commercially, but check per tool</li><li>Transparency: be honest with your audience about AI use where relevant</li></ul>\n\n<strong>AI used with integrity builds trust. AI used carelessly destroys it.</strong>`,
+       apply:{title:"Write your personal AI code",placeholder:"Write your 5 personal rules for how YOU will use AI in your business. These are your standards. What are you committed to? What lines won't you cross? What quality will you always maintain?",
+              prompt:"You are an AI ethics coach at the NG Intelligence AI Mastery Platform. A student has written their personal AI code of conduct. Give feedback that: (1) commends the strongest rule they've committed to, (2) asks a thoughtful question about one rule that could be tested in real situations, (3) affirms that integrity with AI is a genuine business advantage. Under 140 words. Warm but substantive. Sign off as 'Your NG Intel Coach'."}}
+    ]
+  },
+  {
+    id:2,title:"AI Image Creation",short:"Image Creation",color:"var(--aurora-purple)",tag:"Visuals that stop the scroll",
+    intro:"AI image creation is one of the most powerful and profitable skills available right now. Brands are replacing £5000 photography shoots with AI-generated images indistinguishable from the real thing. This module teaches you every major tool and how to get professional results consistently.",
+    lessons:[
+      {title:"Midjourney — the gold standard",desc:"Master the most aesthetically powerful AI image tool in the world.",content:`<strong>Midjourney produces the most visually impressive AI images available.</strong> It runs inside Discord and is entirely prompt-based.\n\n<strong>The Midjourney prompt structure:</strong>\nSubject + Setting + Style + Lighting + Camera + Mood + Parameters\n\n<strong>Key parameters:</strong>\n<ul><li>--ar 3:4 (portrait), --ar 16:9 (landscape), --ar 1:1 (square)</li><li>--v 6.1 (latest version, most photorealistic)</li><li>--style raw (more photographic, less artistic)</li><li>--q 2 (higher quality, slower render)</li></ul>\n\n<strong>Example prompt that works:</strong>\n"Professional woman, 35, luxury home office, natural window light, editorial fashion photography, warm tones, 85mm portrait lens, confident and natural expression --ar 3:4 --v 6.1 --style raw"`,
+       apply:{title:"Generate and share your Midjourney result",placeholder:"Write the exact Midjourney prompt you used. Then describe the image that was generated — what did it look like? What worked? What would you change? If you can't access Midjourney yet, describe the image you would create for your brand.",
+              prompt:"You are a professional AI image creation coach at the NG Intelligence AI Mastery Platform. A student has shared their Midjourney prompt and result. Give feedback on: (1) the prompt structure — what's working and what could be stronger, (2) specific parameter suggestions to improve the result, (3) encouragement about what this skill will unlock for their business. Under 170 words. Technical but accessible. Sign off as 'Your NG Intel Coach'."}},
+      {title:"DALL-E, Firefly & Flux — choosing the right tool",desc:"Different tools, different strengths — know when to use each.",content:`<strong>DALL-E 3 (ChatGPT):</strong>\n<ul><li>Best for: quick concepts, text inside images, simple requests</li><li>Easiest to use — just describe naturally</li><li>Included in ChatGPT Plus — you may already have it</li></ul>\n\n<strong>Adobe Firefly:</strong>\n<ul><li>Best for: commercial-safe images (trained on licensed content only)</li><li>Integrates with Photoshop and Canva directly</li><li>Perfect for product mockups and brand visuals</li></ul>\n\n<strong>Flux (via fal.ai or Replicate):</strong>\n<ul><li>Best for: photorealistic faces and people</li><li>Often free or very cheap to run</li><li>Excellent for UGC-style lifestyle content</li></ul>\n\n<strong>Rule:</strong> Use Midjourney for aesthetics, Flux for realistic people, Firefly for commercial safety, DALL-E for speed.`,
+       apply:{title:"Compare tools with the same prompt",placeholder:"Take ONE concept (a product, a lifestyle scene, a person) and try to generate it with at least 2 different tools. Describe what you got from each. Which tool won for your specific use case, and why?",
+              prompt:"You are an AI image tool expert at the NG Intelligence AI Mastery Platform. A student has compared multiple AI image tools with the same prompt. Give feedback that: (1) validates their conclusion about which tool worked best, (2) explains why that result makes sense technically, (3) suggests one more tool or technique they should try for this use case. Under 150 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Product photography with AI",desc:"Replace expensive shoots with results clients can't tell from real photography.",content:`<strong>AI product photography is transforming e-commerce.</strong> Brands saving thousands per month on shoots — and getting more variety.\n\n<strong>The AI product photography workflow:</strong>\n<ul><li>Photograph your product on plain white background (phone camera is perfect)</li><li>Upload to Canva or Photoroom — AI removes background instantly</li><li>Use Firefly or Midjourney to place it in a lifestyle scene</li><li>Add lighting, shadows and atmosphere with prompts</li></ul>\n\n<strong>Prompt formula for product shots:</strong>\n"[Product description] on [surface/setting], [lighting style], [mood], [camera/lens], editorial [style] photography, [brand colours] --ar 4:5"\n\n<strong>Styles that sell:</strong> Marble + white + morning light (skincare), Raw wood + warm tones (wellness), Clean minimal + studio light (tech/accessories)`,
+       apply:{title:"Create an AI product image",placeholder:"Describe a product — yours or one you admire. Write the prompt you would use to generate a professional product photo. If you've generated one, describe the result. What style did you choose and why does it fit the brand?",
+              prompt:"You are a product photography and AI image coach at the NG Intelligence AI Mastery Platform. A student has described their product photography prompt and approach. Give feedback on: (1) whether the chosen style fits the brand and target audience, (2) one specific prompt tweak that would elevate the result, (3) how this skill translates into real commercial value. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"UGC & lifestyle content with AI",desc:"Generate authentic-looking human content without models or photographers.",content:`<strong>UGC is the most trusted content format on social media.</strong> AI can now create it at scale.\n\n<strong>The UGC formula with AI:</strong>\n<ul><li>Use Flux or NG Intel to generate a realistic person with or using your product</li><li>Specify exactly: setting, expression, clothing, action, lighting</li><li>Add text overlays in Canva for the authentic UGC feel</li><li>Generate 5-10 variations for A/B testing your ads</li></ul>\n\n<strong>NG Intel Image Studio is built for this:</strong>\n<ul><li>Upload your model reference photo</li><li>Upload your product</li><li>Choose theme: Lifestyle, Bathroom, Gym, Health, Unboxing, Custom</li><li>Add scene description and optional text on screen</li><li>Generate — commercial-ready UGC in seconds</li></ul>`,
+       apply:{title:"Design a UGC content piece",placeholder:"Describe in detail the UGC image you want to create. Who is the person, what are they doing, what's the product, what's the setting, what emotion should it convey? Write it as a complete creative brief — as if briefing a real photographer.",
+              prompt:"You are a UGC content strategist and AI coach at the NG Intelligence AI Mastery Platform. A student has written a creative brief for their UGC content piece. Give feedback on: (1) how effective this brief would be in getting the result they want, (2) what's missing that would make the AI generate better content, (3) how this type of content performs in advertising and why. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Building brand visual consistency with AI",desc:"Make every AI image look like it belongs to the same brand.",content:`<strong>The biggest challenge with AI images is consistency.</strong> Each generation looks different. Here's how to fix it permanently.\n\n<strong>Create your brand prompt template:</strong>\nA reusable block of 20-40 words that encodes your visual identity:\n\n"[colour palette], [aesthetic style], [lighting], [mood], [quality markers]"\n\n<strong>Example brand blocks:</strong>\n<ul><li>Luxury skincare: "warm ivory and deep forest tones, editorial beauty, soft natural light, clean minimal composition, premium texture detail"</li><li>Fitness: "bold contrast, energetic, dramatic studio lighting, powerful and authentic, clean backgrounds"</li><li>Wellness: "earthy terracotta and sage, golden hour warmth, soft and organic, sanctuary feeling"</li></ul>\n\n<strong>Keep a prompt library:</strong> Save every prompt that produces on-brand results. Note the tool, version and parameters. This becomes your brand's visual operating system.`,
+       apply:{title:"Write your brand visual template",placeholder:"Write your personal brand prompt block — the 20-40 word visual identity description you'll add to every image prompt. Then test it mentally against 3 different subjects (a person, a product, a place). Would it create a consistent look across all three?",
+              prompt:"You are a brand visual strategist and AI coach at the NG Intelligence AI Mastery Platform. A student has written their brand visual template. Give feedback on: (1) how strong and specific the template is, (2) whether it would create truly consistent results or still leave too much to chance, (3) one refinement that would make it even more precise. Under 150 words. Sign off as 'Your NG Intel Coach'."}}
+    ]
+  },
+  {
+    id:3,title:"AI Video Creation",short:"Video Creation",color:"var(--aurora-pink)",tag:"Motion that converts",
+    intro:"Video is the highest-converting content format online. AI has made professional video creation accessible to solo creators with no camera, no studio and no team. This module covers text-to-video, AI voiceovers, short-form content and video ads.",
+    lessons:[
+      {title:"Text-to-video — the tools and what they do",desc:"The main platforms and when to use each.",content:`<strong>Text-to-video technology is moving faster than any other area of AI.</strong> Here's what's working right now:\n\n<strong>Runway Gen-3 Alpha:</strong> Best cinematic quality. Great for brand videos and creative content. From $12/month.\n\n<strong>Kling AI:</strong> Excellent character motion. Strong for people moving naturally. Great value.\n\n<strong>Luma Dream Machine:</strong> Free tier available. Smooth realistic motion. Perfect starting point.\n\n<strong>Pika:</strong> Fast and easy. Best for quick social content and experiments.\n\n<strong>Sora (OpenAI):</strong> Available in select regions. Very high quality for long-form clips.\n\n<strong>Best current use cases for AI video:</strong>\n<ul><li>B-roll and background footage</li><li>Product showcase clips</li><li>Social media short content</li><li>Ad creative and testing</li><li>Presentation and pitch videos</li></ul>`,
+       apply:{title:"Generate your first AI video",placeholder:"Go to Luma Dream Machine (free) or Pika and generate a video clip. Describe exactly what prompt you used and what the video looked like. What worked? What didn't? If you can't access the tools yet, write a detailed prompt you would use for your first AI video.",
+              prompt:"You are an AI video creation coach at the NG Intelligence AI Mastery Platform. A student has shared their first AI video experience. Give feedback on: (1) their prompt approach and what it reveals about their creative instincts, (2) one specific technique to get better motion and realism, (3) a commercial use case where this exact type of content would work. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"AI voiceovers and scriptwriting",desc:"Professional narration without recording a single word.",content:`<strong>ElevenLabs is the industry standard for AI voice generation.</strong> The quality is remarkable — genuinely indistinguishable from a real voice in many cases.\n\n<strong>The voiceover workflow:</strong>\n<ul><li>Write your script using Claude or ChatGPT</li><li>Paste into ElevenLabs — choose a voice matching your brand</li><li>Download the audio file in MP3 or WAV</li><li>Drop into CapCut, Premiere or DaVinci Resolve</li><li>Sync with your visuals</li></ul>\n\n<strong>Script structure for voiceovers:</strong>\n<ul><li>Hook (first 3 seconds — stop the scroll)</li><li>Problem (relate to the pain)</li><li>Solution (your product/service)</li><li>Proof (result or credibility)</li><li>CTA (one clear action)</li></ul>\n\n<strong>Prompt for a 30-second script:</strong>\n"Write a 30-second video script for [product]. Hook in 3 seconds. Tone: [brand voice]. End with [CTA]. Under 80 words."`,
+       apply:{title:"Write and produce a voiceover script",placeholder:"Write a 30-second script for something in your business using the Hook → Problem → Solution → Proof → CTA structure. Then paste it into ElevenLabs (free) and describe how the voice sounds. Which voice did you choose and why?",
+              prompt:"You are a video scriptwriting and voiceover coach at the NG Intelligence AI Mastery Platform. A student has written a 30-second script and tried ElevenLabs. Give feedback on: (1) the script structure — does it hook fast enough and convert clearly, (2) how well the voice choice matches their brand, (3) one line rewrite that would make the script stronger. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Short-form content at scale",desc:"Create 30 days of video content in a single afternoon.",content:`<strong>The content volume problem:</strong> Social media rewards daily consistency. AI solves it.\n\n<strong>The batch content system:</strong>\n<ul><li>Use ChatGPT to generate 30 content ideas in your niche (10 mins)</li><li>Write all 30 scripts with Claude — batch prompt them (20 mins)</li><li>Generate images with Midjourney or NG Intel for visual content (30 mins)</li><li>Create voiceovers in ElevenLabs for each (20 mins)</li><li>Assemble in CapCut with auto-captions (30 mins)</li><li>Schedule with Buffer or Later across all platforms</li></ul>\n\nTotal: Under 2 hours for 30 pieces of professional content.\n\n<strong>Repurposing multiplier:</strong>\n1 idea → 1 video → 3 Instagram posts → 2 LinkedIn posts → 1 email → 2 TikToks\n= 9 pieces of content from one idea.`,
+       apply:{title:"Plan your content batch",placeholder:"Use ChatGPT to generate 10 content ideas for YOUR niche. Paste the best 5 here. Then write one short script (50-80 words) for your favourite idea. Show me both — the ideas and the script.",
+              prompt:"You are a content strategy and AI coach at the NG Intelligence AI Mastery Platform. A student has shared their content ideas and a script. Give feedback on: (1) which of their ideas has the highest viral or engagement potential and why, (2) how to strengthen the script they wrote, (3) which platform this content would perform best on and why. Under 170 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"AI video ads that convert",desc:"Create scroll-stopping ad creative for a fraction of the cost.",content:`<strong>The highest ROI use of AI video is paid advertising.</strong> Ad creative that costs £500-2000 to shoot can be made for £20 with AI.\n\n<strong>The 30-second ad formula:</strong>\n<ul><li>0-3s: Hook — bold visual or statement that stops the scroll</li><li>3-8s: Problem — acknowledge the pain point</li><li>8-20s: Solution — show the product/service solving it</li><li>20-25s: Proof — result, testimonial or transformation</li><li>25-30s: CTA — one clear next step</li></ul>\n\n<strong>The AI ad creation stack:</strong>\nRunway/Kling (video clips) + ElevenLabs (voice) + Suno (background music) + CapCut (assembly) + Canva (graphics overlay)\n\n<strong>Testing:</strong> Generate 3 versions of the same ad with different hooks. The hook accounts for 80% of ad performance.`,
+       apply:{title:"Script a 30-second video ad",placeholder:"Choose a product or service. Write a 30-second ad script using the 5-part formula above. Include timing marks (0-3s, 3-8s etc.) and describe what visuals you'd use for each section.",
+              prompt:"You are an AI advertising specialist and coach at the NG Intelligence AI Mastery Platform. A student has written a 30-second video ad script. Give feedback on: (1) how strong the hook is — will it stop the scroll in 3 seconds, (2) whether the structure flows naturally to the CTA, (3) one specific change that would increase conversion rate. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Your complete video production system",desc:"The full end-to-end AI video workflow.",content:`<strong>Your professional AI video stack — total cost under £50/month:</strong>\n\n<ul><li><strong>Ideas & Scripts:</strong> ChatGPT + Claude</li><li><strong>Video Clips:</strong> Runway, Kling or Luma</li><li><strong>Still Images:</strong> Midjourney or NG Intel</li><li><strong>Voice:</strong> ElevenLabs</li><li><strong>Music:</strong> Suno or Udio (AI-generated, royalty free)</li><li><strong>Assembly:</strong> CapCut (auto-captions, cuts, pacing)</li><li><strong>Distribution:</strong> Buffer → Instagram, TikTok, YouTube Shorts simultaneously</li></ul>\n\n<strong>This stack is what agencies charge £1500-3000/month to manage for clients.</strong> You now know how to do it yourself — and how to offer it as a service.`,
+       apply:{title:"Design your video stack",placeholder:"List the exact tools you'll use for each part of your video production process. Include free vs paid, and estimate your monthly cost. Then answer: what's the ONE type of video content you'll commit to producing consistently?",
+              prompt:"You are a video production strategist at the NG Intelligence AI Mastery Platform. A student has designed their personal video stack. Give feedback on: (1) whether their stack is well-balanced for their goals, (2) any cost or tool gaps they haven't considered, (3) why their chosen content type is a smart strategic choice. Under 160 words. Sign off as 'Your NG Intel Coach'."}}
+    ]
+  },
+  {
+    id:4,title:"Digital Products with AI",short:"Digital Products",color:"var(--gold)",tag:"Create once, sell forever",
+    intro:"Digital products are the most powerful income stream for solo creators. Create once, sell thousands of times. AI makes building them faster, higher quality and easier than ever. This module covers every type of digital product — and exactly how to launch and sell each one.",
+    lessons:[
+      {title:"eBooks & PDF guides — fast and profitable",desc:"Create a professional eBook in a day.",content:`<strong>eBooks convert because they solve a specific problem for a specific person.</strong> The more niche, the better they sell.\n\n<strong>AI eBook creation workflow:</strong>\n<ul><li>Choose your topic — solve one specific problem your audience has</li><li>Ask Claude for a full 10-chapter outline with subheadings</li><li>Write each chapter with AI, chapter by chapter</li><li>Add your personal examples, stories and perspective</li><li>Design in Canva using a premium template</li><li>Export as PDF</li><li>Sell on Gumroad, Beacons or your own site</li></ul>\n\n<strong>Profitable niches right now:</strong> AI tools for business, social media growth, mindset and productivity, wellness, personal finance basics, parenting with AI.`,
+       apply:{title:"Outline your first eBook",placeholder:"Choose a topic your audience asks about or that you know well. Write the title and a 10-chapter outline with one sentence describing what each chapter covers. This is your first real digital product blueprint.",
+              prompt:"You are a digital product creation coach at the NG Intelligence AI Mastery Platform. A student has written their eBook outline. Give feedback on: (1) how well the topic addresses a real market need, (2) whether the chapter structure flows logically, (3) one chapter that could be expanded or reordered to make the product stronger. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Prompt packs — the AI era's hottest product",desc:"Sell curated prompts for real money.",content:`<strong>Prompt packs are one of the fastest-growing digital product categories.</strong> People pay well for prompts that save them hours.\n\n<strong>Types that sell consistently:</strong>\n<ul><li>Midjourney prompts for specific niches (fashion, food, real estate, beauty)</li><li>ChatGPT prompt bundles for business owners</li><li>Content creation and copywriting prompt libraries</li><li>Niche-specific starter kits</li></ul>\n\n<strong>Pricing that works:</strong>\n£9-£29 for a starter pack → £47-£97 for a comprehensive bundle → £147+ for a full toolkit with tutorials\n\n<strong>Where to sell:</strong> Gumroad, Beacons, Etsy (digital products category), Payhip, your own Netlify site.`,
+       apply:{title:"Create a 10-prompt starter pack",placeholder:"Choose a niche. Write 10 high-quality prompts (for ChatGPT or Midjourney) that solve real problems in that niche. Include a title for the pack and a one-sentence description of who it's for.",
+              prompt:"You are a digital product specialist at the NG Intelligence AI Mastery Platform. A student has created their first prompt pack. Give feedback on: (1) whether the niche is specific enough to sell well, (2) the quality and usefulness of the prompts — are they genuinely better than what someone could write themselves, (3) a pricing and packaging recommendation. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Canva templates — passive income that compounds",desc:"Design once, sell forever.",content:`<strong>Canva templates are among the most scalable digital products you can create.</strong> One template file, sold thousands of times.\n\n<strong>Top selling template types:</strong>\n<ul><li>Instagram post and story templates (always in demand)</li><li>Business pitch decks and presentations</li><li>Media kits and press kit templates</li><li>Lead magnet and eBook layout templates</li><li>Notion dashboards and planning systems</li></ul>\n\n<strong>AI-assisted template creation:</strong>\n<ul><li>Claude writes all the copy, structure and instructions</li><li>Canva AI helps with layout suggestions</li><li>You refine the aesthetic and brand elements</li><li>Export as a shareable Canva template link</li></ul>`,
+       apply:{title:"Design your template concept",placeholder:"Choose one Canva template type. Describe in detail: what it includes, who it's for, how they'd use it, and what makes yours better than free alternatives. Then sketch out (in words) the main sections or pages it would contain.",
+              prompt:"You are a template business strategist at the NG Intelligence AI Mastery Platform. A student has described their Canva template concept. Give feedback on: (1) how sellable this template is in the current market, (2) what specific design or content element would make it stand out from competitors, (3) where and how to price it for maximum sales. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Planners, workbooks & trackers",desc:"Structured tools people pay for — and use every day.",content:`<strong>Planners sell because they create accountability.</strong> People pay for structure.\n\n<strong>AI planner creation process:</strong>\n<ul><li>Describe your planner concept to Claude in detail</li><li>Ask it to generate all sections, daily/weekly layouts, prompts and tracker tables</li><li>Build in Canva or Notion</li><li>Export as PDF (Canva) or shareable template (Notion)</li></ul>\n\n<strong>Concepts that sell consistently:</strong>\n<ul><li>90-day business and goal planners</li><li>Social media content calendars</li><li>Budget trackers and finance journals</li><li>Fitness and wellness journals</li><li>AI tool learning trackers (meta — sell to people on this platform!)</li></ul>\n\n<strong>Pricing sweet spot:</strong> £12-£37 standalone. £47-£97 bundled with an eBook or course.`,
+       apply:{title:"Plan your planner",placeholder:"Choose a planner or workbook concept. Ask Claude to generate the full structure. Paste the structure here. Then tell me: who is this for, what transformation does it help them achieve, and how much would you charge for it?",
+              prompt:"You are a digital product strategist at the NG Intelligence AI Mastery Platform. A student has designed a planner or workbook concept. Give feedback on: (1) how well the structure serves the transformation it promises, (2) whether the target audience is specific enough, (3) a pricing and launch strategy recommendation. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Packaging and launching your products",desc:"Price, package and make your first sale this week.",content:`<strong>Creating the product is 50% of the work. Selling it is the other 50%.</strong>\n\n<strong>Pricing strategy that works:</strong>\n<ul><li>Entry product: £9-£29 (easy yes, builds your buyer list)</li><li>Core product: £47-£97 (your main offer)</li><li>Bundle: £127-£247 (combine 3-5 products)</li><li>Premium: £297+ (your best everything)</li></ul>\n\n<strong>Platforms (all free to start):</strong>\n<ul><li>Gumroad — instant setup, great payouts</li><li>Beacons — link in bio storefront, mobile friendly</li><li>Payhip — handles EU VAT automatically</li><li>Your own Netlify site + Stripe — maximum control</li></ul>\n\n<strong>Minimum viable launch:</strong> Product page → Payment link → Delivery method → Tell 5 people → Iterate.`,
+       apply:{title:"Launch your first product this week",placeholder:"Which product will you launch in the next 7 days? Write your product description (50 words), your price, where you'll sell it, and how you'll tell people about it. This is your launch plan. Commit to it here.",
+              prompt:"You are a launch strategist at the NG Intelligence AI Mastery Platform. A student has committed to launching their first digital product. Give feedback that: (1) validates or refines their price and platform choice, (2) identifies the single biggest risk to their launch succeeding, (3) gives them one action to take in the next 24 hours to make the launch more likely to succeed. Under 160 words. Sign off as 'Your NG Intel Coach'."}}
+    ]
+  },
+  {
+    id:5,title:"App & Tool Building",short:"App Building",color:"var(--aurora-blue)",tag:"Build without coding",
+    intro:"You're inside a tool built with AI. This module teaches you how to build your own. No coding from scratch. No developers. Just great prompts and the right tools — and your ideas become real, working software.",
+    lessons:[
+      {title:"What you can build with AI — and how",desc:"The no-code AI building landscape.",content:`<strong>Two years ago, building a web app required a developer. Now it requires a good prompt.</strong>\n\nTools like Bolt.new, Claude and Cursor let you describe what you want and generate working code instantly.\n\n<strong>What you can build without a developer:</strong>\n<ul><li>AI-powered web tools (exactly like this platform)</li><li>Custom chatbots for your business</li><li>Lead capture tools and calculators</li><li>Membership platforms and learning tools</li><li>Automated email responders and systems</li><li>Chrome extensions</li></ul>\n\n<strong>The stack that built this platform:</strong>\nClaude (code generation) → GitHub (version control) → Netlify (live deployment) → Stripe (payments)\n\n<strong>Total monthly cost: £0-20</strong>`,
+       apply:{title:"Build something tiny right now",placeholder:"Go to Claude.ai and ask it to build you a simple HTML tool — a tip calculator, a word counter, a colour palette generator, a quote randomiser. Download the HTML. Open it in your browser. Describe what you built and what it does.",
+              prompt:"You are a no-code AI building coach at the NG Intelligence AI Mastery Platform. A student has built their first AI-generated tool. Give feedback on: (1) what this small build proves about what's possible, (2) how to extend this same approach to something commercially useful, (3) the most exciting tool they could build for their specific business. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Custom GPTs — your AI assistant for anything",desc:"Build a ChatGPT trained on your knowledge and brand.",content:`<strong>Custom GPTs are your own version of ChatGPT — trained on your business, your voice and your expertise.</strong>\n\n<strong>What to build a Custom GPT for:</strong>\n<ul><li>Customer service for your products (answers FAQs automatically)</li><li>Content creation with your exact brand voice</li><li>Lead qualification before discovery calls</li><li>Client onboarding and welcome experience</li><li>Email drafting in your personal style</li></ul>\n\n<strong>How to create one (ChatGPT Plus required):</strong>\nExplore → Create a GPT → Configure → Write instructions (paste your brand guide) → Add knowledge files → Save → Share the link\n\n<strong>Monetise it:</strong> Charge £9-£47/month access to your Custom GPT. 100 subscribers at £27/month = £2,700/month.`,
+       apply:{title:"Design your Custom GPT",placeholder:"Describe the Custom GPT you would build. What is it for? What instructions would you give it? What knowledge files would you upload? Who would use it and what problem does it solve for them?",
+              prompt:"You are a Custom GPT strategy coach at the NG Intelligence AI Mastery Platform. A student has designed their Custom GPT concept. Give feedback on: (1) how useful and specific the use case is, (2) what instructions would make it behave most effectively, (3) whether and how this could be monetised. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Zapier & Make — automate your entire business",desc:"Connect your tools and eliminate repetitive work forever.",content:`<strong>Automation is the difference between a business and a job.</strong>\n\n<strong>Automations worth building immediately:</strong>\n<ul><li>New Stripe payment → send personalised welcome email</li><li>New email subscriber → add to Notion CRM + send welcome sequence</li><li>New content scheduled → post across all platforms simultaneously</li><li>Customer fills form → create task + send confirmation email</li><li>New testimonial received → add to website and swipe file</li></ul>\n\n<strong>Getting started free:</strong>\nZapier free tier: 100 tasks/month → zapier.com → Create Zap → Trigger → Action → Test → Activate\n\n<strong>Advanced:</strong> Make.com handles complex multi-step workflows with more power than Zapier at lower cost.`,
+       apply:{title:"Build your first automation",placeholder:"Go to Zapier (free tier). Design and build one automation for your business. Describe exactly what the trigger is, what action it performs, and how it saves you time. If you can't build it today, write the exact automation you would build and why.",
+              prompt:"You are an automation strategist at the NG Intelligence AI Mastery Platform. A student has described or built a business automation. Give feedback on: (1) how high-value this automation is in terms of time saved, (2) what would be the next most impactful automation to build after this one, (3) how a business with 10 smart automations compares to one without any. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Deploy your tools live",desc:"From code to live URL in under 10 minutes.",content:`<strong>This is the exact system used to build and deploy every NG Intelligence tool.</strong>\n\n<strong>The deployment process:</strong>\n<ul><li>Build your tool with Claude — describe what you want, get the code</li><li>Download the HTML/code file</li><li>Create a free GitHub account → New repository → Upload file</li><li>Create a free Netlify account → New site → Connect GitHub repo → Deploy</li><li>Your tool is live at a yourname.netlify.app URL in under 5 minutes</li><li>Every update: edit file → push to GitHub → Netlify auto-deploys</li></ul>\n\n<strong>Custom domain:</strong> Buy a domain on Namecheap (£10-15/year) → connect to Netlify → professional URL in 20 minutes.\n\n<strong>This is what agencies charge £1000+ to set up for clients.</strong>`,
+       apply:{title:"Deploy your first live tool",placeholder:"Take the HTML tool you built in lesson 1. Follow the GitHub + Netlify steps. Share the live URL here. If you've hit a blocker, describe exactly where you got stuck and what error you're seeing.",
+              prompt:"You are a technical deployment coach at the NG Intelligence AI Mastery Platform. A student has attempted to deploy their first live tool. Give feedback that: (1) celebrates the milestone of having something live on the internet, (2) addresses any blockers they mentioned, (3) explains what doors this skill opens commercially. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Monetising your building skills",desc:"Turn what you can build into income.",content:`<strong>Once you can build AI tools, you have a skill people pay for immediately.</strong>\n\n<strong>Three monetisation models:</strong>\n\n<strong>1. Sell your tools as products:</strong>\nBuilt something useful? Sell access via Stripe. One-off or monthly subscription. NG Intel is exactly this model.\n\n<strong>2. Build for clients (freelance):</strong>\nBusinesses pay £500-£5000 for a custom AI tool. No-code AI builders are in massive demand on Upwork and Fiverr right now.\n\n<strong>3. Build and sell:</strong>\nGrow a tool to 100 users → sell on Acquire.com or Flippa for 12-24x monthly revenue.\n\n<strong>Starting freelance rate:</strong> £300-£500 per project. 2-3 projects/month = £600-£1500.`,
+       apply:{title:"Define your tool business",placeholder:"Which of the three monetisation models suits you? Describe the tool you would build, who would pay for it, how much you'd charge, and how you'd find your first customer. Make it specific.",
+              prompt:"You are a business strategist at the NG Intelligence AI Mastery Platform. A student has defined their tool business model. Give feedback on: (1) whether their chosen model fits their skills and audience, (2) how realistic their pricing and customer acquisition plan is, (3) one specific action to take this week to move toward their first sale. Under 160 words. Sign off as 'Your NG Intel Coach'."}}
+    ]
+  },
+  {
+    id:6,title:"AI Content & Copywriting",short:"Content & Copy",color:"var(--aurora-green)",tag:"Words that sell at scale",
+    intro:"Content is the engine of every online business. AI makes it possible to produce months of content in days — without losing your voice or your quality. Blogs, social, email, sales copy, brand voice — this module covers it all.",
+    lessons:[
+      {title:"AI blog content & SEO",desc:"Write articles that rank on Google with AI.",content:`<strong>Blogging isn't dead. Writing every post manually is.</strong>\n\nA complete, SEO-optimised 1500-word article in under 30 minutes with AI.\n\n<strong>The SEO content workflow:</strong>\n<ul><li>Find keywords: Ubersuggest, Ahrefs free tier, or Google Search Console</li><li>Prompt Claude: "Write an SEO article about [keyword]. Target: [audience]. Include H2s, intro, body, conclusion. 1200 words. Optimised for search intent."</li><li>Add your personal experience, examples and unique perspective</li><li>Add an AI-generated featured image (Midjourney)</li><li>Publish on your site, Medium or LinkedIn</li></ul>\n\n<strong>One blog post per week, consistently for 6 months, creates compounding organic traffic that runs forever.</strong>`,
+       apply:{title:"Write your first AI blog post",placeholder:"Choose a keyword relevant to your business. Write the prompt you used. Then paste the first 200 words of the blog post Claude or ChatGPT produced. Finally — what personal perspective or example will you add to make it genuinely yours?",
+              prompt:"You are a content and SEO coach at the NG Intelligence AI Mastery Platform. A student has drafted their first AI blog post. Give feedback on: (1) whether the keyword and topic have real search potential, (2) how strong the opening 200 words are for hooking readers and search engines, (3) how their personal addition makes it more valuable than AI alone. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Social media content at scale",desc:"30 days of content in one afternoon.",content:`<strong>The biggest content mistake: writing posts one at a time.</strong> Batch everything.\n\n<strong>The AI content batch process:</strong>\n<ul><li>Ask ChatGPT: "Give me 30 content ideas for [niche] targeting [audience]" (10 mins)</li><li>Choose your best 20 ideas</li><li>Ask Claude to write all 20 captions in your brand voice (20 mins)</li><li>Generate images with Midjourney or NG Intel (30 mins)</li><li>Schedule everything in Buffer or Later (20 mins)</li></ul>\n\nTotal: 80 minutes for 20 professional posts.\n\n<strong>The repurposing multiplier:</strong>\n1 blog post → 5 Instagram posts → 3 LinkedIn posts → 1 newsletter → 2 TikTok scripts = 11 pieces from 1 idea.`,
+       apply:{title:"Batch your content",placeholder:"Ask ChatGPT for 30 content ideas in your niche. Paste your 5 favourite ideas here. Then write one full caption (Instagram or LinkedIn) for your top idea using your brand voice. Show me both.",
+              prompt:"You are a social media strategy coach at the NG Intelligence AI Mastery Platform. A student has batched content ideas and written a caption. Give feedback on: (1) which of their 5 ideas has the highest potential to go viral or drive engagement, (2) how well the caption captures their brand voice, (3) one specific improvement to the caption that would increase engagement. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Email sequences that sell on autopilot",desc:"Build a 7-email welcome sequence that converts subscribers to buyers.",content:`<strong>Email is still the highest-converting marketing channel.</strong> A good welcome sequence turns a new subscriber into a buyer within 7 days — automatically.\n\n<strong>The 7-email sequence structure:</strong>\n<ul><li>Email 1: Welcome + deliver your lead magnet immediately</li><li>Email 2: Your story — why you do what you do</li><li>Email 3: Your biggest insight or lesson</li><li>Email 4: Social proof — results and transformations</li><li>Email 5: Handle the main objection directly</li><li>Email 6: Soft introduce your core offer</li><li>Email 7: Clear CTA with gentle urgency</li></ul>\n\n<strong>Prompt to write all 7:</strong> "Write a 7-email welcome sequence for [business]. Brand voice: [describe]. Audience: [describe]. Main product: [describe]. Each email under 200 words."`,
+       apply:{title:"Write your welcome sequence",placeholder:"Write Email 1 and Email 7 of your welcome sequence in full. Email 1: welcome them and deliver value immediately. Email 7: make the sale with a clear CTA. Show me both complete emails.",
+              prompt:"You are an email marketing coach at the NG Intelligence AI Mastery Platform. A student has written their welcome and sales email. Give feedback on: (1) how well Email 1 hooks and delivers immediate value, (2) how compelling the CTA in Email 7 is, (3) one specific line in either email that should be rewritten and why. Under 170 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Sales page copy that converts",desc:"The framework that turns browsers into buyers.",content:`<strong>Good copy is worth more than good design. Words convert.</strong>\n\n<strong>The sales page formula:</strong>\n<ul><li><strong>Headline:</strong> The transformation in one powerful line</li><li><strong>Subheadline:</strong> Who this is for and what they specifically get</li><li><strong>Problem:</strong> Agitate the pain they feel right now</li><li><strong>Solution:</strong> Introduce your product as the bridge</li><li><strong>Features + Benefits:</strong> What it includes and what that means for them</li><li><strong>Social proof:</strong> Real results, real numbers, real people</li><li><strong>Objections:</strong> Address the top 3 reasons people don't buy</li><li><strong>Offer:</strong> Exactly what they get and the investment</li><li><strong>CTA:</strong> One clear button, one clear action</li></ul>`,
+       apply:{title:"Write your headline and hook",placeholder:"Using the formula above, write the headline, subheadline and problem section for one of your products. These are the most important 100 words on any sales page — spend time on them.",
+              prompt:"You are a conversion copywriter and coach at the NG Intelligence AI Mastery Platform. A student has written their sales page headline, subheadline and problem section. Give feedback on: (1) how powerful the headline is — does it convey transformation clearly, (2) whether the problem section genuinely resonates with the target buyer, (3) a rewrite suggestion for the single weakest line. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Training AI on your brand voice",desc:"Make AI sound exactly like you.",content:`<strong>The biggest AI content complaint: it sounds generic.</strong> Here's the permanent fix.\n\n<strong>Creating your brand voice document:</strong>\n<ul><li>Collect 10 of your best existing posts, captions or emails</li><li>Ask Claude: "Analyse this content and create a brand voice guide that captures my writing style, tone, vocabulary and personality"</li><li>Review and refine the output — does it sound like you?</li><li>Save it as your Brand Voice Document</li><li>Prefix every AI content prompt: "Write in this brand voice: [paste guide]"</li></ul>\n\n<strong>Your brand voice document should describe:</strong>\nTone (warm/authoritative/playful) + Vocabulary preferences + Sentence length + What you never say + Your signature phrases.`,
+       apply:{title:"Create your brand voice document",placeholder:"Paste 3 of your best captions, posts or email snippets here. Then paste the brand voice guide that Claude or ChatGPT creates from analysing them. Finally — does it sound like you? What would you change?",
+              prompt:"You are a brand voice strategist at the NG Intelligence AI Mastery Platform. A student has shared their content samples and AI-generated brand voice guide. Give feedback on: (1) how accurately the guide captures their authentic voice, (2) what's missing that would make it more precise, (3) how using this consistently will improve their content quality and speed. Under 160 words. Sign off as 'Your NG Intel Coach'."}}
+    ]
+  },
+  {
+    id:7,title:"Monetisation Streams",short:"Monetisation",color:"var(--aurora-pink)",tag:"Skills into income",
+    intro:"Skills without monetisation are hobbies. This module is about turning everything you've built into real, consistent income — freelance services, passive products, recurring memberships and licensing. Multiple streams, growing monthly.",
+    lessons:[
+      {title:"Freelance AI services — earn this month",desc:"The fastest path from AI skills to real income.",content:`<strong>The fastest way to monetise AI skills is offering services to businesses who can't do it themselves.</strong>\n\n<strong>Services in demand right now:</strong>\n<ul><li>AI content creation (blogs, social, email) — £300-£800/month retainer</li><li>AI image and UGC creation — £50-£150 per asset set</li><li>Custom GPT building — £200-£500 one-off</li><li>AI automation setup — £300-£1000 one-off</li><li>AI video production — £200-£500 per video</li></ul>\n\n<strong>Where to find clients:</strong>\nUpwork, Fiverr, LinkedIn (search for businesses posting about AI challenges), local business owners, your existing network\n\n<strong>Your starter offer:</strong>\nPick one service. Set one price. Offer it to 10 people this week.`,
+       apply:{title:"Write your freelance offer",placeholder:"Write your service offer in 3 sections: (1) What you do in one clear sentence, (2) Who it's for and what they get, (3) Your price and what's included. Keep it to 100 words maximum — clarity sells.",
+              prompt:"You are a freelance business coach at the NG Intelligence AI Mastery Platform. A student has written their freelance offer. Give feedback on: (1) how clear and compelling the offer is to a potential buyer, (2) whether the price is positioned correctly for the value offered, (3) one specific word or phrase change that would make it more persuasive. Under 150 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Passive income with digital products",desc:"Products that sell while you sleep.",content:`<strong>Digital products are the closest thing to true passive income.</strong> Create once, sell thousands of times.\n\n<strong>Your digital product stack from this platform:</strong>\n<ul><li>eBook or guide</li><li>Prompt pack</li><li>Canva templates</li><li>AI tool access (like NG Intel)</li></ul>\n\n<strong>Building momentum:</strong>\n<ul><li>List every product on Gumroad and Beacons</li><li>Cross-promote in every email and content piece</li><li>Create bundles to increase average order value</li><li>Add an affiliate programme (Gumroad has this built in)</li><li>Let buyers refer buyers — word of mouth at scale</li></ul>\n\n<strong>Conservative target:</strong> 10 sales/month per product × 5 products × £29 average = £1,450/month passive.`,
+       apply:{title:"Design your product ecosystem",placeholder:"List every digital product you could create (or have created) from this platform. Give each one a price. Then calculate: if you sold 10 of each per month, what's your monthly passive income? Show your working.",
+              prompt:"You are a passive income strategist at the NG Intelligence AI Mastery Platform. A student has mapped their product ecosystem. Give feedback on: (1) which product in their list has the highest profit potential and why, (2) how to sequence their launch order for maximum momentum, (3) one product they haven't thought of that would complement their range. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Membership & subscription income",desc:"The income that grows every month.",content:`<strong>Recurring revenue is the most powerful income model.</strong> Every new member adds to your monthly baseline — and it never resets.\n\n<strong>Membership models that work:</strong>\n<ul><li>Monthly content membership (exclusive content + tools)</li><li>Community membership (private group + resources + live sessions)</li><li>Tool subscription (ongoing access to your AI tool)</li><li>Coaching membership (monthly calls + accountability)</li></ul>\n\n<strong>Pricing psychology:</strong>\n<ul><li>£19-£27/month — high volume, easy yes, low churn</li><li>£37-£67/month — sweet spot for serious learners</li><li>£97-£197/month — committed business owners</li></ul>\n\n<strong>Platform options:</strong> Stripe (full control) · Patreon · Ko-fi · Your own Netlify tool + Stripe`,
+       apply:{title:"Design your membership offer",placeholder:"Design your membership: (1) What's included each month, (2) Your price, (3) How members access it, (4) How you'll deliver value month after month to prevent cancellations. Be specific.",
+              prompt:"You are a membership business coach at the NG Intelligence AI Mastery Platform. A student has designed their membership offer. Give feedback on: (1) whether the included value justifies the price, (2) the biggest churn risk in their model and how to address it, (3) one addition that would make this a no-brainer for their target member. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Affiliate income with AI tools",desc:"Earn commissions recommending tools you already use.",content:`<strong>Every AI tool in this platform has an affiliate programme.</strong> Earn 20-50% recurring commission recommending tools you genuinely use.\n\n<strong>High-paying programmes:</strong>\n<ul><li>Jasper AI — 30% recurring commission</li><li>Writesonic — 30% recurring</li><li>ElevenLabs — 22% recurring</li><li>Canva — commission per signup</li><li>ConvertKit/Flodesk — 30-50% recurring</li></ul>\n\n<strong>The affiliate content strategy:</strong>\nCreate honest review content (video, blog, social post) → Include your affiliate link → Earn when people sign up → Receive recurring monthly payments indefinitely\n\n<strong>10 active referrals at £30/month commission = £300/month for content you created once.</strong>`,
+       apply:{title:"Start your affiliate income",placeholder:"Sign up for 2-3 affiliate programmes for tools you genuinely use. Share your affiliate links here (or describe the programmes you joined). Then write one honest 100-word review of one tool you'd recommend — this is your first affiliate content piece.",
+              prompt:"You are an affiliate marketing coach at the NG Intelligence AI Mastery Platform. A student has signed up for affiliate programmes and written a review. Give feedback on: (1) how authentic and compelling the review is, (2) how to drive traffic to this content, (3) which affiliate programme in the list has the best long-term earning potential for their audience. Under 150 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Licensing your tools and systems",desc:"Sell the rights to use what you've built.",content:`<strong>Once you have a working AI tool, you can licence it.</strong> Instead of individual sales, sell the right to use your system to businesses at scale.\n\n<strong>Licensing models:</strong>\n<ul><li>White-label your tool — businesses rebrand and sell your tool as their own</li><li>Agency licence — charge agencies to use your prompt systems or tools for their clients</li><li>Franchise model — teach others to build the same business using your system</li></ul>\n\n<strong>Real example:</strong>\nYour NG Intel tool white-labelled to a marketing agency at £500/month. They charge clients £2000/month. You earn passively. They profit. Both win.\n\n<strong>Licence pricing:</strong> £200-£1000/month per licence depending on the value and exclusivity.`,
+       apply:{title:"Design your licence offer",placeholder:"What tool, system or knowledge could you licence to other businesses? Describe the licence offer in 3 parts: (1) What they get, (2) What they can do with it, (3) Your monthly licence fee and why it's worth it.",
+              prompt:"You are a licensing business strategist at the NG Intelligence AI Mastery Platform. A student has designed a licence offer. Give feedback on: (1) how unique and protectable their licensable asset is, (2) who the ideal licence buyer is and how to find them, (3) how to price it for maximum value while remaining attractive. Under 160 words. Sign off as 'Your NG Intel Coach'."}}
+    ]
+  },
+  {
+    id:8,title:"Profitable Revenue Systems",short:"Revenue Systems",color:"var(--sunrise-gold)",tag:"Scale to £10k and beyond",
+    intro:"This is where it all comes together. You have the skills, the products and the income streams. Now you build the system that scales everything to consistent, growing, automated income.",
+    lessons:[
+      {title:"Your complete AI business model",desc:"Map your entire income ecosystem.",content:`<strong>By this point you have everything you need. Now you design the system.</strong>\n\n<strong>The four-level business model:</strong>\n<ul><li><strong>Front-end:</strong> Easy yes, low price (£9-£29) — gets people into your world</li><li><strong>Core offer:</strong> Main product or service (£97-£197) — your primary income</li><li><strong>Recurring:</strong> Membership or subscription (£27-£97/month) — your stable base</li><li><strong>High ticket:</strong> VIP, done-for-you, or masterclass (£497+) — your growth lever</li></ul>\n\nEach level leads naturally to the next. A £29 buyer is a perfect candidate for your £197 course. A course student is perfect for your £97/month membership. A member is perfect for your £997 VIP.\n\n<strong>Stack all four and the compound effect is extraordinary.</strong>`,
+       apply:{title:"Map your four-level income model",placeholder:"Fill in your four levels: (1) Your front-end product and price, (2) Your core offer and price, (3) Your recurring income and monthly price, (4) Your high-ticket offer and price. Then calculate: if you had 20 customers at each level, what's your monthly income?",
+              prompt:"You are a business model architect at the NG Intelligence AI Mastery Platform. A student has mapped their four-level income model. Give feedback on: (1) how well the levels connect and lead naturally to each other, (2) which level has the weakest offering and how to strengthen it, (3) their income calculation — is it realistic within 12 months and what would accelerate it. Under 170 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Funnel building with AI",desc:"Turn strangers into buyers automatically.",content:`<strong>A funnel turns a stranger into a customer without you being personally involved.</strong>\n\n<strong>Your AI business funnel:</strong>\n<ul><li>Content (social/SEO) → drives cold traffic</li><li>Lead magnet (free PDF or tool) → captures email address</li><li>Welcome sequence (7 emails) → builds trust and sells</li><li>Core product → first purchase</li><li>Upsell → higher value offer at checkout or immediately after</li><li>Ongoing emails → repeat purchases and membership</li></ul>\n\n<strong>Full funnel tool stack:</strong>\nMailchimp/Flodesk (email) + Gumroad/Stripe (payments) + Netlify (site) + Zapier (connecting everything)\n\n<strong>Monthly cost: under £50. Revenue potential: unlimited.</strong>`,
+       apply:{title:"Map your complete funnel",placeholder:"Draw out your funnel in steps — from how someone first discovers you to becoming a recurring customer. Identify which step currently doesn't exist in your business. What would you build first to complete the funnel?",
+              prompt:"You are a funnel strategist at the NG Intelligence AI Mastery Platform. A student has mapped their sales funnel. Give feedback on: (1) the biggest gap or leak in their funnel, (2) which step, if fixed, would have the highest impact on revenue, (3) a specific action to take this week to fill that gap. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"The path to £10k/month",desc:"The maths — and the method.",content:`<strong>£10,000/month is not a dream. It's a maths problem.</strong>\n\n<strong>Path A — Products only:</strong>\n100 × £97 product = £9,700\n\n<strong>Path B — Mixed model:</strong>\n30 × £197 membership + 5 × £500 retainer + 20 × £47 product = £9,350\n\n<strong>Path C — Premium:</strong>\n20 × £500/month VIP = £10,000\n\n<strong>The compound effect:</strong>\n<ul><li>Every piece of content brings more traffic</li><li>Every email subscriber is a future buyer</li><li>Every tool you build earns for years</li><li>Every student can become an affiliate</li></ul>\n\n<strong>Timeline reality:</strong> With consistent execution, Path B is achievable in 9-12 months from zero. Not overnight — but not as far away as you think.`,
+       apply:{title:"Calculate your personal path to £10k",placeholder:"Using the three paths as inspiration, design YOUR path to £10,000/month. What combination of income streams will get you there? How many customers do you need at each price point? Set a realistic 12-month target for each stream.",
+              prompt:"You are a revenue growth coach at the NG Intelligence AI Mastery Platform. A student has designed their personal path to £10k/month. Give feedback on: (1) whether the maths actually adds up to their goal, (2) which income stream they should build first and why, (3) the single biggest risk to their plan and how to mitigate it. Under 170 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Automating your entire business",desc:"Build a business that runs without your constant involvement.",content:`<strong>The goal isn't to work harder with AI. It's to earn more while working less.</strong>\n\n<strong>What should be automated by now:</strong>\n<ul><li>Email welcome sequence (runs automatically for every new subscriber)</li><li>Product delivery (instant access after payment — zero manual work)</li><li>Social media scheduling (Buffer posts while you sleep)</li><li>Customer onboarding (Zapier triggers everything automatically)</li><li>Invoice creation and payment processing (Stripe handles it all)</li></ul>\n\n<strong>Target operating model:</strong>\n2-3 hours per day on high-value creative and strategic work.\n4-6 hours per day your automated systems run without you.\n\n<strong>You work on the business. AI and automation work in it.</strong>`,
+       apply:{title:"Audit your automation gaps",placeholder:"List every task you do repeatedly in your business (daily or weekly). For each one, mark whether it's currently automated or not. Then identify the 3 most time-consuming unautomated tasks — and describe which tool could automate each one.",
+              prompt:"You are an operations and automation coach at the NG Intelligence AI Mastery Platform. A student has audited their automation gaps. Give feedback on: (1) which unautomated task is costing them the most time and money, (2) the exact Zapier or tool setup to fix it, (3) how many hours per week full automation could free up for them. Under 160 words. Sign off as 'Your NG Intel Coach'."}},
+      {title:"Your 90-day execution plan",desc:"Leave with clarity, confidence and a plan.",content:`<strong>Congratulations. You've completed the NG Intelligence AI Mastery Platform.</strong>\n\nYou now have real, actionable skills in:\n<ul><li>35+ AI tools across image, video, content and building</li><li>Digital product creation and launch</li><li>App and tool building and deployment</li><li>Email marketing, funnels and sales copy</li><li>Multiple income streams and monetisation systems</li></ul>\n\n<strong>Your 90-day plan:</strong>\n\n<strong>Days 1-30:</strong> Launch one product. Build your email list. Post AI content 5x per week.\n\n<strong>Days 31-60:</strong> Add a second income stream. Build three automations. Target your first 10 customers.\n\n<strong>Days 61-90:</strong> Launch a membership or retainer. Stack your income. Double down on what's working.\n\n<strong>The only thing standing between you and £10k/month is consistent execution.</strong>`,
+       apply:{title:"Write your 90-day commitment",placeholder:"Write your personal 90-day plan. What will you launch in month 1? What income stream will you add in month 2? What will you scale in month 3? Include at least one specific launch date. Sign it like a contract to yourself.",
+              prompt:"You are the final coach and mentor in the NG Intelligence AI Mastery Platform. This student has completed every module and written their 90-day commitment. Give them feedback that: (1) reflects back what they've achieved by completing this platform, (2) identifies the strongest part of their 90-day plan, (3) gives them one parting piece of wisdom about executing consistently when motivation dips. End with genuine encouragement. This is the last message they'll get from you — make it count. Under 200 words. Sign off as 'Your NG Intel Coach — NG Intelligence'."}}
+    ]
+  }
+];
+
+let currentMod=0, currentLes=-1, unlockedMods=1;
+let completedLessons={}, feedbackGiven={};
+
+function enterPlatform(){
+  document.getElementById('lockscreen').style.display='none';
+  document.getElementById('platform').style.display='block';
+  buildSidebar();
+  renderModule(0);
+}
+
+function buildSidebar(){
+  const nav=document.getElementById('sidebar-nav');
+  nav.innerHTML=MODULES.map((m,i)=>{
+    const locked=i>=unlockedMods;
+    const done=(completedLessons[i]||[]).length===m.lessons.length;
+    return `<div class="nav-item ${i===currentMod?'nav-active':''} ${locked?'nav-locked':''}" onclick="${locked?'':' renderModule('+i+')'}">
+      <span class="nav-num">0${i+1}</span>
+      <span class="nav-title">${m.short}</span>
+      <span class="nav-dot ${done?'dot-done':i===currentMod&&!locked?'dot-active':''}"></span>
+    </div>`;
+  }).join('');
+  const pct=Math.round((unlockedMods-1)/8*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-cur').textContent=Math.min(unlockedMods,8);
+}
+
+function renderModule(idx){
+  currentMod=idx; currentLes=-1;
+  const m=MODULES[idx];
+  const eyeEl=document.getElementById('mh-eye');
+  eyeEl.textContent=`Module 0${idx+1}`;
+  eyeEl.style.color=m.color;
+  document.getElementById('mh-title').innerHTML=m.title;
+  document.getElementById('mh-badge').textContent=`${m.lessons.length} Lessons`;
+
+  const locked=idx>=unlockedMods;
+  const view=document.getElementById('mod-view');
+  if(locked){
+    view.innerHTML=`<div class="locked-mod"><div class="lm-ring">⚿</div><div class="lm-title">Module Locked</div><div class="lm-sub">Complete all lessons in the previous module to unlock this one.</div></div>`;
+    buildSidebar();return;
+  }
+
+  const done=completedLessons[idx]||[];
+  const allDone=done.length===m.lessons.length;
+  const rows=m.lessons.map((l,li)=>{
+    const isDone=done.includes(li);
+    const isUnlocked=li===0||done.includes(li-1);
+    return `<div class="lesson-row ${isDone?'row-done':''} ${!isUnlocked&&!isDone?'row-locked':''}" onclick="${isUnlocked||isDone?'openLesson('+idx+','+li+')':'alert(\"Complete the previous lesson first.\")'}">
+      <div class="row-num">0${li+1}</div>
+      <div class="row-body">
+        <div class="row-title">${l.title}</div>
+        <div class="row-desc">${l.desc}</div>
+        <div class="row-chips"><span class="chip">Learn</span><span class="chip chip-apply">Apply</span>${isDone?'<span class="chip chip-done">✓ Complete</span>':''}</div>
+      </div>
+      <div class="row-icon ${isDone?'ri-done':isUnlocked?'ri-active':''}">${isDone?'✓':isUnlocked?'→':''}</div>
+    </div>`;
+  }).join('');
+
+  view.innerHTML=`
+    <div class="mod-intro">
+      <div class="mod-intro-tag" style="color:${m.color}">${m.tag}</div>
+      <div class="mod-intro-title"><em>${m.title}</em></div>
+      <div class="mod-intro-body">${m.intro}</div>
+    </div>
+
+    <div class="lesson-list">${rows}</div>
+    <div id="lesson-panel" class="lesson-panel"></div>
+    <div id="mod-complete" class="mod-complete ${allDone?'show':''}">
+      <div class="mc-glow">✦</div>
+      <div class="mc-title">Module <em>Complete</em></div>
+      <div class="mc-sub">You've applied every lesson. Your knowledge is real now — you did the work. Ready for the next level?</div>
+      ${idx<7?`<button class="btn-unlock" onclick="unlockNext(${idx})">Unlock Module 0${idx+2} →</button>`:`<div style="font-size:14px;color:var(--gold);letter-spacing:2px;font-weight:600;margin-top:8px">🎉 AI MASTERY PLATFORM — COMPLETE</div>`}
+    </div>`;
+
+  // API handled server-side
+  buildSidebar();
+}
+
+function openLesson(modIdx,lesIdx){
+  currentLes=lesIdx;
+  const m=MODULES[modIdx]; const l=m.lessons[lesIdx];
+  const done=(completedLessons[modIdx]||[]).includes(lesIdx);
+  const panel=document.getElementById('lesson-panel');
+  panel.className='lesson-panel open';
+  const fKey=`${modIdx}-${lesIdx}`;
+  const hasFeedback=feedbackGiven[fKey];
+
+  panel.innerHTML=`
+    <div class="lp-tag" style="color:${m.color}">Module 0${modIdx+1} · Lesson 0${lesIdx+1}</div>
+    <div class="lp-title">${l.title}</div>
+    <div class="lp-content">${l.content.replace(/\n/g,'<br>')}</div>
+    <div class="apply-box">
+      <div class="apply-head"><span class="apply-badge">Apply It — Type Your Answer</span></div>
+      <div class="apply-title">${l.apply.title}</div>
+      <div class="apply-desc">${l.apply.desc}</div>
+      <div class="apply-input-label">Your Answer</div>
+      <textarea class="apply-textarea" id="apply-input-${fKey}" placeholder="${l.apply.placeholder}" rows="6"></textarea>
+      <div class="apply-submit-row">
+        <button class="btn-submit" id="submit-btn-${fKey}" onclick="submitForFeedback('${fKey}',${modIdx},${lesIdx})">Get AI Coaching Feedback →</button>
+        <span class="submit-hint">Type your answer above, then submit for personalised feedback</span>
+      </div>
+      <div class="ai-feedback ${hasFeedback?'show':''}" id="feedback-${fKey}">
+        <div class="ai-feedback-head"><span class="ai-badge">NG Intel Coach · AI Feedback</span></div>
+        <div id="feedback-content-${fKey}" class="ai-text">${hasFeedback||''}</div>
+      </div>
+    </div>
+    <div class="lesson-btns">
+      ${lesIdx>0?`<button class="btn-prev-les" onclick="openLesson(${modIdx},${lesIdx-1})">← Previous</button>`:''}
+      <button class="btn-complete ${done||hasFeedback?'ready':''}" id="complete-btn-${fKey}" onclick="completeLesson(${modIdx},${lesIdx})">${done?'✓ Completed':'Mark Complete & Continue →'}</button>
+    </div>`;
+
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+async function submitForFeedback(fKey,modIdx,lesIdx){
+  const input=document.getElementById(`apply-input-${fKey}`);
+  const answer=input?input.value.trim():'';
+  if(!answer||answer.length<20){alert('Please write a proper answer before submitting — the more detail you give, the better your feedback will be.');return;}
+
+  const btn=document.getElementById(`submit-btn-${fKey}`);
+  const feedbackBox=document.getElementById(`feedback-${fKey}`);
+  const feedbackContent=document.getElementById(`feedback-content-${fKey}`);
+
+  btn.disabled=true; btn.textContent='Getting your feedback...';
+  feedbackBox.className='ai-feedback show';
+  feedbackContent.innerHTML=`<div class="ai-thinking"><div class="ai-dot"></div><div class="ai-dot"></div><div class="ai-dot"></div></div>`;
+
+  const l=MODULES[modIdx].lessons[lesIdx];
+
+  try{
+    const resp=await fetch('/.netlify/functions/feedback',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({prompt:l.apply.prompt,answer:answer})
+    });
+    const data=await resp.json();
+    const text=data.feedback||data.error||'Feedback unavailable. Please try again.';
+    feedbackContent.textContent=text;
+    feedbackGiven[fKey]=text;
+    enableComplete(fKey);
+  }catch(e){
+    feedbackContent.textContent='Connection error — please check your API key and try again.';
+  }
+  btn.disabled=false; btn.textContent='Resubmit →';
+}
+
+function enableComplete(fKey){
+  const cb=document.getElementById(`complete-btn-${fKey}`);
+  if(cb) cb.classList.add('ready');
+}
+
+function completeLesson(modIdx,lesIdx){
+  const fKey=`${modIdx}-${lesIdx}`;
+  if(!feedbackGiven[fKey]&&!(completedLessons[modIdx]||[]).includes(lesIdx)){
+    alert('Please submit your answer and receive your AI feedback before completing this lesson.');return;
+  }
+  if(!completedLessons[modIdx]) completedLessons[modIdx]=[];
+  if(!completedLessons[modIdx].includes(lesIdx)) completedLessons[modIdx].push(lesIdx);
+  const m=MODULES[modIdx];
+  if(lesIdx<m.lessons.length-1){renderModule(modIdx);setTimeout(()=>openLesson(modIdx,lesIdx+1),100);}
+  else{renderModule(modIdx);setTimeout(()=>{const b=document.getElementById('mod-complete');if(b){b.classList.add('show');b.scrollIntoView({behavior:'smooth'});}},200);}
+}
+
+function unlockNext(idx){
+  unlockedMods=Math.max(unlockedMods,idx+2);
+  renderModule(idx+1);
+}
+</script>
+</body>
+</html>
